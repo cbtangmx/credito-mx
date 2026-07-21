@@ -105,8 +105,105 @@ export default async function ComplaintDetailPage({ params }: Props) {
   const complaint = complaintData as unknown as ComplaintDetail
   const institution = complaint.institution
 
+  // ============================================
+  // JSON-LD: WebPage + CreativeWork Schema
+  // 让搜索引擎和 AI 引擎结构化理解投诉内容
+  // ============================================
+  const complaintSchema = {
+    '@context': 'https://schema.org',
+    '@type': ['WebPage', 'CreativeWork'],
+    name: complaint.title,
+    headline: complaint.title,
+    description: complaint.content.slice(0, 300),
+    url: `https://credito-mx.com/quejas/${complaint.id}`,
+    datePublished: complaint.created_at,
+    ...(complaint.resolution && { dateModified: complaint.resolution }),
+    inLanguage: 'es-MX',
+    author: {
+      '@type': 'Person',
+      name: complaint.user_name,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Credito MX',
+      url: 'https://credito-mx.com',
+    },
+    // 投诉关联的金融机构
+    about: institution
+      ? {
+          '@type': 'Organization',
+          name: institution.name,
+          url: `https://credito-mx.com/instituciones/${institution.slug}`,
+          ...(institution.rating > 0 && {
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: institution.rating.toFixed(1),
+              ratingCount: institution.review_count,
+              bestRating: '5',
+              worstRating: '1',
+            },
+          }),
+        }
+      : undefined,
+    // 投诉分类
+    keywords: [
+      CATEGORY_LABELS[complaint.category],
+      'queja',
+      'queja financiera',
+      institution?.name,
+      'México',
+    ].filter(Boolean).join(', '),
+    // 投诉状态
+    creativeWorkStatus: complaint.status === 'resolved'
+      ? 'resolved'
+      : complaint.status === 'reviewing'
+        ? 'in progress'
+        : 'pending',
+    // 投诉内容正文
+    text: complaint.content,
+  }
+
+  // BreadcrumbList Schema - 面包屑导航
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: 'https://credito-mx.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Quejas',
+        item: 'https://credito-mx.com/quejas',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: complaint.title.slice(0, 50),
+        item: `https://credito-mx.com/quejas/${complaint.id}`,
+      },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* SEO: Structured Data - WebPage + CreativeWork */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(complaintSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
       {/* 顶部导航 + 标题 */}
       <section className="bg-white py-6 border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
