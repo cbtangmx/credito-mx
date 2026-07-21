@@ -158,8 +158,76 @@ export default async function InstitutionDetailPage({ params }: Props) {
   const topReviews = reviews.slice(0, 5)
   const topComplaints = complaints.slice(0, 5)
 
+  // ============================================
+  // JSON-LD: Organization + AggregateRating Schema
+  // 根据机构类型映射 schema.org 类型
+  // ============================================
+  const schemaTypeMap: Record<string, string> = {
+    bank: 'BankOrCreditUnion',
+    sofom: 'FinancialService',
+    fintech: 'FinancialService',
+    government: 'GovernmentOrganization',
+    credit_card: 'FinancialService',
+  }
+
+  const institutionSchema = {
+    '@context': 'https://schema.org',
+    '@type': schemaTypeMap[institution.type] || 'Organization',
+    name: institution.name,
+    url: `https://credito-mx.com/instituciones/${slug}`,
+    ...(institution.website_url && { sameAs: [institution.website_url] }),
+    ...(institution.description && { description: institution.description }),
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'MX',
+    },
+    ...(institution.is_verified && {
+      hasCredential: {
+        '@type': 'EducationalOccupationalCredential',
+        name: 'Institución verificada',
+      }
+    }),
+    // AggregateRating - 核心评分数据
+    ...(institution.review_count > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: institution.rating.toFixed(1),
+        bestRating: '5',
+        worstRating: '1',
+        ratingCount: institution.review_count,
+        reviewCount: institution.review_count,
+      },
+    }),
+    // Review - 前5条评价
+    ...(topReviews.length > 0 && {
+      review: topReviews.map((review) => ({
+        '@type': 'Review',
+        author: {
+          '@type': 'Person',
+          name: review.user_name,
+        },
+        datePublished: review.created_at,
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: review.rating,
+          bestRating: '5',
+          worstRating: '1',
+        },
+        ...(review.title && { name: review.title }),
+        ...(review.content && { reviewBody: review.content }),
+      })),
+    }),
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* SEO: Structured Data - Organization + AggregateRating */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(institutionSchema),
+        }}
+      />
       {/* ============================================ */}
       {/* 机构头部 - 返回链接 + 类型标签 + 评分 + 操作按钮 */}
       {/* ============================================ */}

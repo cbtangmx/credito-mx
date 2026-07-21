@@ -46,6 +46,50 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // ============================================
+  // JSON-LD: Organization Schema (全站)
+  // ============================================
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Credito MX",
+    url: "https://credito-mx.com",
+    logo: "https://credito-mx.com/logo.png",
+    description: "Plataforma de evaluaciones y quejas de instituciones financieras en México. Compara bancos, fintech y SOFOM con calificaciones reales de usuarios.",
+    foundingDate: "2026",
+    areaServed: {
+      "@type": "Country",
+      name: "México",
+    },
+    knowsLanguage: ["es-MX"],
+    sameAs: [
+      "https://credito-mx.com",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      url: "https://credito-mx.com/contacto",
+      availableLanguage: ["Spanish"],
+    },
+  }
+
+  // ============================================
+  // JSON-LD: WebSite Schema (搜索入口)
+  // ============================================
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Credito MX",
+    url: "https://credito-mx.com",
+    description: "Evaluaciones y quejas de instituciones financieras en México",
+    inLanguage: "es-MX",
+    publisher: {
+      "@type": "Organization",
+      name: "Credito MX",
+      url: "https://credito-mx.com",
+    },
+  }
+
   return (
     <html
       lang="es"
@@ -58,7 +102,20 @@ export default function RootLayout({
         <CookieConsent />
         <AdSenseScript />
         <Analytics />
+        {/* SEO: Structured Data (JSON-LD) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
       </body>
     </html>
-  );
+  )
 }
