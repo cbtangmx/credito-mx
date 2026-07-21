@@ -25,18 +25,10 @@ type Props = {
 
 // ============================================
 // 动态生成页面 Metadata (SEO)
-// 根据机构信息生成 title、description、openGraph
-// 每个机构有独立的 meta description，包含评分、评价数、机构类型等关键词
+// 按 T06 规范生成 meta description
+// 模板: Reseñas y quejas de {name} en México. {description}. {reviewCount} evaluaciones, {complaintCount} quejas. Calificación: {rating}/5. Opiniones reales de usuarios.
+// 长度控制: 140-160 字符
 // ============================================
-
-// 机构类型 → SEO 关键词映射
-const TYPE_SEO_LABELS: Record<string, string> = {
-  bank: 'banco',
-  sofom: 'SOFOM',
-  fintech: 'fintech',
-  government: 'institución de gobierno',
-  credit_card: 'tarjeta de crédito',
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
@@ -57,33 +49,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
-  const typeLabel = TYPE_SEO_LABELS[institution.type] || 'institución financiera'
   const rating = institution.rating.toFixed(1)
-  const reviews = institution.review_count
-  const complaints = institution.complaint_count
+  const reviewCount = institution.review_count
+  const complaintCount = institution.complaint_count
+  const desc = institution.description ?? ''
 
-  // 生成 SEO 优化的 description
-  // 格式: 机构名 + 类型 + 评分 + 评价数 + 投诉数 + 关键词
-  // 控制在 150-160 字符（Google 最佳长度）
-  let description: string
-  if (institution.description) {
-    // 有数据库描述时，截取并附加统计信息
-    const desc = institution.description.slice(0, 100)
-    description = `${desc} Calificación: ${rating}/5, ${reviews} evaluaciones, ${complaints} quejas.`
-  } else {
-    // 无描述时生成默认描述
-    description = `Evalúa ${institution.name}, ${typeLabel} en México. Calificación: ${rating}/5 basada en ${reviews} evaluaciones. Lee quejas y opiniones reales de usuarios.`
+  // ---- 按 T06 规范生成 meta description ----
+  const fixedHead = `Reseñas y quejas de ${institution.name} en México. `
+  const tail = ` ${reviewCount} evaluaciones, ${complaintCount} quejas. Calificación: ${rating}/5.`
+  const tailFull = ` ${reviewCount} evaluaciones, ${complaintCount} quejas. Calificación: ${rating}/5. Opiniones reales de usuarios.`
+
+  // 尝试完整版（含尾部 "Opiniones reales de usuarios."）
+  let metaDescription = fixedHead + desc + tailFull
+
+  // 超长 → 去掉尾部
+  if (metaDescription.length > 160) {
+    metaDescription = fixedHead + desc + tail
+  }
+
+  // 仍超长 → 截断 description
+  if (metaDescription.length > 160) {
+    const maxDescLen = 160 - fixedHead.length - tail.length
+    const truncatedDesc = desc.substring(0, Math.max(10, maxDescLen))
+    metaDescription = fixedHead + truncatedDesc + tail
   }
 
   return {
     title: `${institution.name} - Evaluaciones, Quejas y Calificación`,
-    description,
+    description: metaDescription,
     alternates: {
       canonical: `/instituciones/${slug}`,
     },
     openGraph: {
       title: `${institution.name} - Evaluaciones y Quejas`,
-      description,
+      description: metaDescription,
       type: 'website',
       locale: 'es_MX',
       siteName: 'Credito MX',
@@ -91,7 +90,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: 'summary',
       title: `${institution.name} - Calificación: ${rating}/5`,
-      description,
+      description: metaDescription,
     },
   }
 }
