@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import AdSenseScript from "@/components/AdSenseScript";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -102,6 +103,7 @@ export default function RootLayout({
         <CookieConsent />
         <AdSenseScript />
         <Analytics />
+        <GoogleAnalytics />
         {/* SEO: Structured Data (JSON-LD) */}
         <script
           type="application/ld+json"

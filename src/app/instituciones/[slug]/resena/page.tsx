@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-client'
 import { Institution, TYPE_LABELS, TYPE_COLORS } from '@/types/database'
+import { trackReviewSubmit } from '@/lib/ga'
 
 // 页面 props 类型 - Next.js 15+ 中 params 是 Promise
 type Props = {
@@ -143,6 +144,13 @@ export default function ResenaPage({ params }: Props) {
         setSubmitting(false)
         return
       }
+
+      // GA4 事件跟踪：评价提交成功
+      trackReviewSubmit({
+        institution_slug: slug,
+        institution_name: institution.name,
+        rating: formData.rating,
+      })
 
       // 提交成功，跳转到机构详情页
       router.push(`/instituciones/${slug}`)

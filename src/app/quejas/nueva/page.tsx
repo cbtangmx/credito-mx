@@ -16,6 +16,7 @@ import {
   CATEGORY_LABELS,
   TYPE_LABELS
 } from '@/types/database'
+import { trackComplaintSubmit } from '@/lib/ga'
 
 // 分类选项 - 从类型定义中提取
 const CATEGORY_OPTIONS: ComplaintCategory[] = ['service', 'rates', 'charges', 'collection', 'other']
@@ -163,6 +164,14 @@ export default function NuevaQuejaPage() {
       }
 
       // 成功 - 跳转回列表页
+      // GA4 事件跟踪：投诉提交成功
+      const selectedInstitution = institutions.find(i => i.id === form.institutionId)
+      trackComplaintSubmit({
+        institution_slug: selectedInstitution?.id ?? '',
+        institution_name: selectedInstitution?.name ?? 'Unknown',
+        category: form.category,
+      })
+
       setSubmitStatus('success')
       startTransition(() => {
         router.push('/quejas?success=1')

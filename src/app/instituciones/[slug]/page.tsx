@@ -17,6 +17,8 @@ import {
   STATUS_LABELS,
   STATUS_COLORS
 } from '@/types/database'
+import InstitutionTracker from '@/components/InstitutionTracker'
+import TrackedButtons from '@/components/TrackedButtons'
 
 // 页面 props 类型
 type Props = {
@@ -260,6 +262,13 @@ export default async function InstitutionDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* GA4 事件跟踪：机构页浏览 */}
+      <InstitutionTracker
+        institutionSlug={slug}
+        institutionName={institution.name}
+        institutionType={institution.type}
+        rating={institution.rating}
+      />
       {/* SEO: Structured Data - Organization + AggregateRating */}
       <script
         type="application/ld+json"
@@ -304,25 +313,12 @@ export default async function InstitutionDetailPage({ params }: Props) {
                 {institution.name}
               </h1>
             </div>
-            {/* 操作按钮 */}
-            <div className="flex gap-3 flex-wrap">
-              {institution.website_url && (
-                <a
-                  href={institution.website_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-blue-700 text-white rounded-lg font-medium hover:bg-blue-800 transition-colors"
-                >
-                  Visitar sitio web →
-                </a>
-              )}
-              <Link
-                href={`/instituciones/${slug}/resena`}
-                className="px-4 py-2 bg-white text-blue-700 border border-blue-700 rounded-lg font-medium hover:bg-blue-50 transition-colors"
-              >
-                Escribir evaluación
-              </Link>
-            </div>
+            {/* 操作按钮 - 带 GA4 事件跟踪 */}
+            <TrackedButtons
+              institutionSlug={slug}
+              institutionName={institution.name}
+              websiteUrl={institution.website_url}
+            />
           </div>
         </div>
       </section>
