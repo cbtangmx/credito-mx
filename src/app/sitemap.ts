@@ -1,64 +1,102 @@
 import { MetadataRoute } from 'next'
+import { createClient } from '@/lib/supabase-client'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://credito-mx.com'
-  
-  // Static pages
-  const staticPages = [
+
+  // ============================================
+  // 静态页面
+  // ============================================
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'daily' as const,
+      changeFrequency: 'daily',
       priority: 1,
     },
     {
       url: `${baseUrl}/instituciones`,
       lastModified: new Date(),
-      changeFrequency: 'daily' as const,
+      changeFrequency: 'daily',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/quejas`,
       lastModified: new Date(),
-      changeFrequency: 'daily' as const,
+      changeFrequency: 'daily',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/evaluar`,
       lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'monthly',
       priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/nosotros`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/contacto`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/privacidad`,
       lastModified: new Date(),
-      changeFrequency: 'yearly' as const,
+      changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: `${baseUrl}/terminos`,
       lastModified: new Date(),
-      changeFrequency: 'yearly' as const,
+      changeFrequency: 'yearly',
       priority: 0.3,
     },
   ]
 
-  // Institution pages (will be dynamic from database later)
-  const institutions = [
-    'stori',
-    'klar',
-    'nu-bank',
-    'crediclub',
-    'minu',
-    'konfio',
-  ]
+  // ============================================
+  // 动态机构详情页 (40+ pages)
+  // ============================================
+  let institutionPages: MetadataRoute.Sitemap = []
+  let complaintPages: MetadataRoute.Sitemap = []
 
-  const institutionPages = institutions.map((slug) => ({
-    url: `${baseUrl}/instituciones/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }))
+  try {
+    const supabase = await createClient()
 
-  return [...staticPages, ...institutionPages]
+    // 获取全部机构 slug 和更新时间
+    const { data: institutions } = await supabase
+      .from('institutions')
+      .select('slug, updated_at')
+      .order('rating', { ascending: false })
+
+    institutionPages = (institutions || []).map((inst) => ({
+      url: `${baseUrl}/instituciones/${inst.slug}`,
+      lastModified: inst.updated_at ? new Date(inst.updated_at) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }))
+
+    // 获取全部公开投诉 ID 和创建时间
+    const { data: complaints } = await supabase
+      .from('complaints')
+      .select('id, created_at')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false })
+
+    complaintPages = (complaints || []).map((comp) => ({
+      url: `${baseUrl}/quejas/${comp.id}`,
+      lastModified: comp.created_at ? new Date(comp.created_at) : new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }))
+  } catch (error) {
+    // 如果数据库连接失败，仅返回静态页面
+    console.error('Sitemap generation: database error:', error)
+  }
+
+  return [...staticPages, ...institutionPages, ...complaintPages]
 }
