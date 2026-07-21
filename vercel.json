@@ -15,7 +15,6 @@
         }
       ],
       "destination": "https://www.credito-mx.com/:path*",
-      "permanent": true,
       "statusCode": 301
     }
   ]
