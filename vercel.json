@@ -4,5 +4,19 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "credito-mx.com"
+        }
+      ],
+      "destination": "https://www.credito-mx.com/:path*",
+      "permanent": true,
+      "statusCode": 301
+    }
+  ]
 }

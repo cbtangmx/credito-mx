@@ -25,19 +25,30 @@ type Props = {
 
 // ============================================
 // 动态生成页面 Metadata (SEO)
-// 在请求时根据机构信息生成 title 和 description
+// 根据机构信息生成 title、description、openGraph
+// 每个机构有独立的 meta description，包含评分、评价数、机构类型等关键词
 // ============================================
+
+// 机构类型 → SEO 关键词映射
+const TYPE_SEO_LABELS: Record<string, string> = {
+  bank: 'banco',
+  sofom: 'SOFOM',
+  fintech: 'fintech',
+  government: 'institución de gobierno',
+  credit_card: 'tarjeta de crédito',
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const supabase = await createClient()
 
   const { data } = await supabase
     .from('institutions')
-    .select('name, description, rating, review_count')
+    .select('name, description, type, rating, review_count, complaint_count')
     .eq('slug', slug)
     .single()
 
-  const institution = data as Pick<Institution, 'name' | 'description' | 'rating' | 'review_count'> | null
+  const institution = data as Pick<Institution, 'name' | 'description' | 'type' | 'rating' | 'review_count' | 'complaint_count'> | null
 
   if (!institution) {
     return {
@@ -46,13 +57,41 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
   }
 
+  const typeLabel = TYPE_SEO_LABELS[institution.type] || 'institución financiera'
+  const rating = institution.rating.toFixed(1)
+  const reviews = institution.review_count
+  const complaints = institution.complaint_count
+
+  // 生成 SEO 优化的 description
+  // 格式: 机构名 + 类型 + 评分 + 评价数 + 投诉数 + 关键词
+  // 控制在 150-160 字符（Google 最佳长度）
+  let description: string
+  if (institution.description) {
+    // 有数据库描述时，截取并附加统计信息
+    const desc = institution.description.slice(0, 100)
+    description = `${desc} Calificación: ${rating}/5, ${reviews} evaluaciones, ${complaints} quejas.`
+  } else {
+    // 无描述时生成默认描述
+    description = `Evalúa ${institution.name}, ${typeLabel} en México. Calificación: ${rating}/5 basada en ${reviews} evaluaciones. Lee quejas y opiniones reales de usuarios.`
+  }
+
   return {
-    title: `${institution.name} - Evaluaciones y Quejas`,
-    description:
-      institution.description ??
-      `Lee evaluaciones y quejas sobre ${institution.name}. Calificación: ${institution.rating}/5, ${institution.review_count} evaluaciones.`,
+    title: `${institution.name} - Evaluaciones, Quejas y Calificación`,
+    description,
     alternates: {
       canonical: `/instituciones/${slug}`,
+    },
+    openGraph: {
+      title: `${institution.name} - Evaluaciones y Quejas`,
+      description,
+      type: 'website',
+      locale: 'es_MX',
+      siteName: 'Credito MX',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${institution.name} - Calificación: ${rating}/5`,
+      description,
     },
   }
 }
