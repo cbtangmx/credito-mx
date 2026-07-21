@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
+import AdSenseScript from "@/components/AdSenseScript";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +27,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Credito MX" }],
   creator: "Credito MX",
   metadataBase: new URL("https://credito-mx.com"),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "es_MX",
@@ -55,6 +55,9 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieConsent />
+        <AdSenseScript />
+        <Analytics />
       </body>
     </html>
   );

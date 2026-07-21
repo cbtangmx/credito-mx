@@ -65,6 +65,11 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link href="/nosotros" className="hover:text-white transition-colors">
+                  Acerca de
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacidad" className="hover:text-white transition-colors">
                   Política de Privacidad
                 </Link>
@@ -83,8 +88,14 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-          <p>© {new Date().getFullYear()} Credito MX. Todos los derechos reservados.</p>
+        <div className="border-t border-gray-800 mt-8 pt-8">
+          <div className="text-center text-xs text-gray-500 space-y-2">
+            <p>© {new Date().getFullYear()} Credito MX. Todos los derechos reservados.</p>
+            <p>
+              Publicidad: Este sitio utiliza Google AdSense para mostrar anuncios.
+              Las opiniones expresadas por los usuarios no constituyen consejo financiero.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
