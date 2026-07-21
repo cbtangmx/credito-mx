@@ -43,6 +43,26 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Categorías</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link href="/mejores/tarjetas-de-credito" className="hover:text-white transition-colors">
+                  🏆 Mejores Tarjetas 2026
+                </Link>
+              </li>
+              <li>
+                <Link href="/mejores/fintech" className="hover:text-white transition-colors">
+                  🏆 Mejores Fintech 2026
+                </Link>
+              </li>
+              <li>
+                <Link href="/mejores/sofom" className="hover:text-white transition-colors">
+                  🏆 Mejores SOFOM 2026
+                </Link>
+              </li>
+              <li>
+                <Link href="/mejores/bancos" className="hover:text-white transition-colors">
+                  🏆 Mejores Bancos 2026
+                </Link>
+              </li>
+              <li>
                 <Link href="/instituciones?tipo=bank" className="hover:text-white transition-colors">
                   Bancos
                 </Link>

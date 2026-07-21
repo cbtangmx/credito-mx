@@ -35,6 +35,12 @@ export default function Header() {
               Instituciones
             </Link>
             <Link
+              href="/mejores/tarjetas-de-credito"
+              className="text-gray-700 hover:text-blue-700 font-medium transition-colors"
+            >
+              Mejores 2026
+            </Link>
+            <Link
               href="/quejas"
               className="text-gray-700 hover:text-blue-700 font-medium transition-colors"
             >
@@ -82,6 +88,13 @@ export default function Header() {
                 className="text-gray-700 hover:text-blue-700 font-medium px-2 py-1"
               >
                 Instituciones
+              </Link>
+              <Link
+                href="/mejores/tarjetas-de-credito"
+                onClick={closeMenu}
+                className="text-gray-700 hover:text-blue-700 font-medium px-2 py-1"
+              >
+                Mejores 2026
               </Link>
               <Link
                 href="/quejas"
