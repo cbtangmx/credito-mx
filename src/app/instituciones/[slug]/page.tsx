@@ -55,9 +55,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const desc = institution.description ?? ''
 
   // ---- 按 T06 规范生成 meta description ----
+  // 模板: Reseñas y quejas de {name} en México. {description}. {reviewCount} evaluaciones, ...
   const fixedHead = `Reseñas y quejas de ${institution.name} en México. `
-  const tail = ` ${reviewCount} evaluaciones, ${complaintCount} quejas. Calificación: ${rating}/5.`
-  const tailFull = ` ${reviewCount} evaluaciones, ${complaintCount} quejas. Calificación: ${rating}/5. Opiniones reales de usuarios.`
+  const tail = `. ${reviewCount} evaluaciones, ${complaintCount} quejas. Calificación: ${rating}/5.`
+  const tailFull = `. ${reviewCount} evaluaciones, ${complaintCount} quejas. Calificación: ${rating}/5. Opiniones reales de usuarios.`
 
   // 尝试完整版（含尾部 "Opiniones reales de usuarios."）
   let metaDescription = fixedHead + desc + tailFull
