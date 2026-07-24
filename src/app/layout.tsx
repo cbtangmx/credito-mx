@@ -27,11 +27,19 @@ export const metadata: Metadata = {
   keywords: ["credito", "prestamos", "financiera", "banco", "fintech", "mexico", "evaluaciones", "quejas"],
   authors: [{ name: "Credito MX" }],
   creator: "Credito MX",
-  metadataBase: new URL("https://credito-mx.com"),
+  metadataBase: new URL("https://www.credito-mx.com"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      "es-MX": "https://www.credito-mx.com/",
+      "es": "https://www.credito-mx.com/",
+      "x-default": "https://www.credito-mx.com/",
+    },
+  },
   openGraph: {
     type: "website",
     locale: "es_MX",
-    url: "https://credito-mx.com",
+    url: "https://www.credito-mx.com",
     siteName: "Credito MX",
     title: "Credito MX - Evaluaciones de Instituciones Financieras en México",
     description: "Evalúa y compara instituciones financieras en México",
@@ -93,7 +101,7 @@ export default function RootLayout({
 
   return (
     <html
-      lang="es"
+      lang="es-MX"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
