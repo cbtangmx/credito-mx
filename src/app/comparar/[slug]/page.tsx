@@ -8,6 +8,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase-client'
+import { DEFAULT_OG_IMAGE, BASE_URL } from '@/lib/seo'
 import {
   Institution,
   Review,
@@ -306,8 +307,20 @@ export async function generateMetadata({
       description: 'Comparativa basada en evaluaciones reales de usuarios y quejas registradas.',
       type: 'article',
       locale: 'es_MX',
-      url: `https://www.credito-mx.com/comparar/${slug}`,
+      url: `${BASE_URL}/comparar/${slug}`,
       siteName: 'Credito MX',
+      images: [{
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: `${nameA} vs ${nameB} — Comparativa en Credito MX`,
+      }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${nameA} vs ${nameB}: ¿Cuál es Mejor?`,
+      description: 'Comparativa basada en evaluaciones reales de usuarios y quejas registradas.',
+      images: [DEFAULT_OG_IMAGE],
     },
   }
 }

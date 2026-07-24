@@ -5,24 +5,15 @@
 
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { buildMetadata, buildBreadcrumbJsonLd, BASE_URL } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Comparativas de Instituciones Financieras en México | Credito MX',
-  description:
-    'Compara instituciones financieras en México: tarjetas de crédito, préstamos, bancos y fintech. Evaluaciones reales de usuarios, quejas y calificaciones verificadas.',
-  alternates: {
-    canonical: '/comparar',
-  },
-  openGraph: {
-    title: 'Comparativas de Instituciones Financieras en México',
-    description:
-      'Compara bancos, fintech y SOFOM en México. Evaluaciones reales, quejas y calificaciones.',
-    type: 'website',
-    locale: 'es_MX',
-    url: 'https://www.credito-mx.com/comparar',
-    siteName: 'Credito MX',
-  },
-}
+export const metadata: Metadata = buildMetadata({
+  title: 'Comparativas de Instituciones Financieras | Credito MX',
+  description: 'Compara instituciones financieras en México: tarjetas de crédito, bancos digitales, préstamos en línea y más. Evaluaciones reales de usuarios.',
+  url: '/comparar',
+  type: 'website',
+  imageAlt: 'Comparativas de instituciones financieras — Credito MX',
+})
 
 // ============================================
 // 10 个对比配置（与 [comparison]/page.tsx 保持一致）
@@ -41,8 +32,17 @@ const COMPARISONS = [
 ]
 
 export default function CompararIndexPage() {
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Inicio', url: `${BASE_URL}/` },
+    { name: 'Comparativas', url: `${BASE_URL}/comparar` },
+  ])
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 面包屑 */}
         <nav aria-label="Navegación" className="text-sm text-gray-500 mb-4">

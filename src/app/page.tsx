@@ -5,6 +5,7 @@
 // ============================================
 
 import Link from "next/link"
+import { buildMetadata } from '@/lib/seo'
 import { createClient } from '@/lib/supabase-server'
 import {
   Institution,
@@ -17,19 +18,13 @@ import {
 } from '@/types/database'
 
 // 页面元数据 - SEO 优化
-export const metadata = {
-  title: "Credito MX - Evaluaciones de Instituciones Financieras en México",
-  description: "Evalúa y compara instituciones financieras en México. Lee evaluaciones de usuarios, presenta quejas y encuentra las mejores opciones de crédito, préstamos y servicios financieros.",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "Credito MX - Evaluaciones de Instituciones Financieras",
-    description: "Plataforma líder de evaluaciones y quejas de instituciones financieras en México",
-    type: "website",
-    locale: "es_MX",
-  },
-}
+export const metadata = buildMetadata({
+  title: 'Credito MX - Evaluaciones de Instituciones Financieras en México',
+  description: 'Evalúa y compara instituciones financieras en México. Lee evaluaciones de usuarios, presenta quejas y encuentra las mejores opciones de crédito, préstamos y servicios financieros.',
+  url: '/',
+  type: 'website',
+  imageAlt: 'Credito MX — Reseñas financieras en México',
+})
 
 // 首页组件 - 异步获取 Supabase 数据
 export default async function HomePage() {

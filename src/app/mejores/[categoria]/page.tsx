@@ -8,6 +8,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase-client'
+import { DEFAULT_OG_IMAGE, BASE_URL } from '@/lib/seo'
 import {
   Institution,
   Review,
@@ -130,7 +131,7 @@ export async function generateMetadata({
     }
   }
 
-  const url = `https://www.credito-mx.com/mejores/${categoria}`
+  const url = `${BASE_URL}/mejores/${categoria}`
 
   return {
     title: config.title,
@@ -145,11 +146,18 @@ export async function generateMetadata({
       locale: 'es_MX',
       url,
       siteName: 'Credito MX',
+      images: [{
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: `${config.categoryLabel} en México 2026`,
+      }],
     },
     twitter: {
       card: 'summary_large_image',
       title: config.h1,
       description: config.description,
+      images: [DEFAULT_OG_IMAGE],
     },
   }
 }

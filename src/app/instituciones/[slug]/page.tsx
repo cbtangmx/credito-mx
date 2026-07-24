@@ -7,6 +7,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase-server'
+import { DEFAULT_OG_IMAGE, BASE_URL } from '@/lib/seo'
 import {
   Institution,
   Review,
@@ -86,14 +87,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${institution.name} - Evaluaciones y Quejas`,
       description: metaDescription,
-      type: 'website',
+      type: 'article',
       locale: 'es_MX',
       siteName: 'Credito MX',
+      url: `${BASE_URL}/instituciones/${slug}`,
+      images: [{
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: `${institution.name} — Reseñas en Credito MX`,
+      }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title: `${institution.name} - Calificación: ${rating}/5`,
-      description: metaDescription,
+      description: metaDescription.length > 200 ? metaDescription.substring(0, 197) + '...' : metaDescription,
+      images: [DEFAULT_OG_IMAGE],
     },
   }
 }
@@ -472,19 +481,19 @@ export default async function InstitutionDetailPage({ params }: Props) {
         '@type': 'ListItem',
         position: 1,
         name: 'Inicio',
-        item: 'https://credito-mx.com/',
+        item: 'https://www.credito-mx.com/',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Instituciones',
-        item: 'https://credito-mx.com/instituciones',
+        item: 'https://www.credito-mx.com/instituciones',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: institution.name,
-        item: `https://credito-mx.com/instituciones/${slug}`,
+        item: `https://www.credito-mx.com/instituciones/${slug}`,
       },
     ],
   }

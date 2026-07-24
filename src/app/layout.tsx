@@ -38,6 +38,20 @@ export const metadata: Metadata = {
     siteName: "Credito MX",
     title: "Credito MX - Evaluaciones de Instituciones Financieras en México",
     description: "Evalúa y compara instituciones financieras en México",
+    images: [
+      {
+        url: 'https://www.credito-mx.com/og-default.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Credito MX — Reseñas financieras en México',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Credito MX - Evaluaciones de Instituciones Financieras en México',
+    description: 'Evalúa y compara instituciones financieras en México. Lee evaluaciones de usuarios, presenta quejas y encuentra las mejores opciones de crédito.',
+    images: ['https://www.credito-mx.com/og-default.jpg'],
   },
   robots: {
     index: true,

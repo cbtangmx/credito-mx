@@ -1,18 +1,35 @@
-import type { Metadata } from "next"
+import { buildMetadata, buildBreadcrumbJsonLd, BASE_URL } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: "Política de Privacidad",
-  description: "Política de privacidad de Credito MX - Cómo recopilamos, usamos y protegemos tu información personal.",
-  alternates: {
-    canonical: "/privacidad",
-  },
-}
+export const dynamic = 'force-static'
+export const revalidate = false
+
+export const metadata = buildMetadata({
+  title: 'Política de Privacidad | Credito MX',
+  description: 'Política de privacidad de Credito MX - Cómo recopilamos, usamos y protegemos tu información personal conforme a la LFPDPPP de México.',
+  url: '/privacidad',
+  type: 'article',
+  imageAlt: 'Política de Privacidad — Credito MX',
+})
 
 export default function PrivacidadPage() {
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Inicio', url: `${BASE_URL}/` },
+    { name: 'Política de Privacidad', url: `${BASE_URL}/privacidad` },
+  ])
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
+          <nav aria-label="Navegación" className="text-sm text-gray-500 mb-6">
+            <a href="/" className="hover:underline">Inicio</a>
+            {' > '}
+            <span>Política de Privacidad</span>
+          </nav>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             Política de Privacidad
           </h1>

@@ -16,6 +16,7 @@ import {
   CATEGORY_LABELS,
   TYPE_LABELS
 } from '@/types/database'
+import { buildMetadata, buildBreadcrumbJsonLd, BASE_URL, DEFAULT_OG_IMAGE } from '@/lib/seo'
 
 // 扩展类型 - 包含完整的关联机构信息
 type ComplaintDetail = Complaint & {
@@ -58,19 +59,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : rawInstitution?.name
   const finalInstitutionName = institutionName ?? 'una institución'
 
-  return {
+  return buildMetadata({
     title: data.title,
     description: `Queja sobre ${finalInstitutionName}: ${data.content.slice(0, 150)}`,
-    alternates: {
-      canonical: `/quejas/${id}`,
-    },
-    openGraph: {
-      title: `${data.title} | Credito MX`,
-      description: `Queja pública sobre ${institutionName}`,
-      type: "article",
-      locale: "es_MX",
-    },
-  }
+    url: `/quejas/${id}`,
+    type: 'article',
+    imageAlt: `Queja sobre ${finalInstitutionName} — Credito MX`,
+    publishedTime: (data as any).created_at,
+    author: (data as any).user_name,
+    section: 'Quejas',
+  })
 }
 
 // 格式化日期 - 完整格式
@@ -164,30 +162,11 @@ export default async function ComplaintDetailPage({ params }: Props) {
   }
 
   // BreadcrumbList Schema - 面包屑导航
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Inicio',
-        item: 'https://credito-mx.com',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Quejas',
-        item: 'https://credito-mx.com/quejas',
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: complaint.title.slice(0, 50),
-        item: `https://credito-mx.com/quejas/${complaint.id}`,
-      },
-    ],
-  }
+  const breadcrumbSchema = buildBreadcrumbJsonLd([
+    { name: 'Inicio', url: `${BASE_URL}/` },
+    { name: 'Quejas', url: `${BASE_URL}/quejas` },
+    { name: complaint.title.slice(0, 50), url: `${BASE_URL}/quejas/${complaint.id}` },
+  ])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -207,6 +186,14 @@ export default async function ComplaintDetailPage({ params }: Props) {
       {/* 顶部导航 + 标题 */}
       <section className="bg-white py-6 border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* 可见面包屑导航 */}
+          <nav aria-label="Navegación" className="text-sm text-gray-500 mb-3">
+            <a href="/" className="hover:underline">Inicio</a>
+            {' > '}
+            <a href="/quejas" className="hover:underline">Quejas</a>
+            {' > '}
+            <span>{complaint.title.slice(0, 50)}</span>
+          </nav>
           <Link
             href="/quejas"
             className="text-blue-700 hover:underline text-sm mb-3 inline-block"

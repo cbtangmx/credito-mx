@@ -5,7 +5,6 @@
 // ============================================
 
 import Link from "next/link"
-import type { Metadata } from "next"
 import { createClient } from '@/lib/supabase-server'
 import {
   Complaint,
@@ -14,21 +13,16 @@ import {
   STATUS_COLORS,
   CATEGORY_LABELS
 } from '@/types/database'
+import { buildMetadata, buildBreadcrumbJsonLd, BASE_URL } from '@/lib/seo'
 
 // 页面元数据 - SEO 优化
-export const metadata: Metadata = {
-  title: "Quejas de Usuarios - Instituciones Financieras",
-  description: "Lee quejas públicas de usuarios sobre instituciones financieras en México. Cargos no reconocidos, tasas abusivas, mal servicio y más.",
-  alternates: {
-    canonical: "/quejas",
-  },
-  openGraph: {
-    title: "Quejas de Usuarios - Credito MX",
-    description: "Quejas públicas sobre instituciones financieras en México",
-    type: "website",
-    locale: "es_MX",
-  },
-}
+export const metadata = buildMetadata({
+  title: 'Quejas de Usuarios - Instituciones Financieras',
+  description: 'Lee quejas públicas de usuarios sobre instituciones financieras en México. Cargos no reconocidos, tasas abusivas, mal servicio y más.',
+  url: '/quejas',
+  type: 'website',
+  imageAlt: 'Quejas de instituciones financieras en México — Credito MX',
+})
 
 // 扩展的投诉类型 - 包含关联机构信息
 type ComplaintWithInstitution = Complaint & {
@@ -112,11 +106,28 @@ export default async function QuejasPage() {
     { label: STATUS_LABELS.resolved, count: resolvedCount, color: STATUS_COLORS.resolved, status: 'resolved' }
   ]
 
+  // BreadcrumbList JSON-LD - 面包屑导航结构化数据
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Inicio', url: `${BASE_URL}/` },
+    { name: 'Quejas', url: `${BASE_URL}/quejas` },
+  ])
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* SEO: BreadcrumbList Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* 页面头部 - 标题 + Presentar Queja 按钮 */}
       <section className="bg-white py-8 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* 可见面包屑导航 */}
+          <nav aria-label="Navegación" className="text-sm text-gray-500 mb-3">
+            <a href="/" className="hover:underline">Inicio</a>
+            {' > '}
+            <span>Quejas</span>
+          </nav>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
