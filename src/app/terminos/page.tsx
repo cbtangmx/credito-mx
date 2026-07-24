@@ -179,17 +179,43 @@ export default function TerminosPage() {
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mt-8 mb-4">
-                11. Ley Aplicable
+                11. CONDUSEF y Resolución de Controversias
               </h2>
               <p>
-                Estos términos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier disputa
-                será resuelta por los tribunales competentes de la Ciudad de México.
+                Credito MX es una plataforma independiente de evaluaciones y no es una institución
+                financiera regulada por la Comisión Nacional para la Protección y Defensa de los
+                Usuarios de Servicios Financieros (CONDUSEF). Sin embargo, recomendamos a nuestros
+                usuarios que tengan controversias con instituciones financieras registradas en
+                nuestro sitio acudir a CONDUSEF para obtener asesoría y resolución de disputas.
+              </p>
+              <p className="mt-3">
+                CONDUSEF ofrece servicios gratuitos de conciliación y arbitraje para usuarios de
+                productos financieros en México. Puedes contactar a CONDUSEF a través de su sitio
+                web oficial (<a href="https://www.gob.mx/condusef" className="text-blue-700 hover:underline" target="_blank" rel="noopener noreferrer">www.gob.mx/condusef</a>)
+                o al teléfono 55 5342 0910.
+              </p>
+              <p className="mt-3">
+                Las evaluaciones y quejas publicadas en Credito MX no sustituyen los procedimientos
+                legales formales. Si tienes una disputa legal con una institución financiera, te
+                recomendamos presentar una queja formal ante CONDUSEF o las autoridades competentes.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mt-8 mb-4">
-                12. Contacto
+                12. Ley Aplicable
+              </h2>
+              <p>
+                Estos términos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier disputa
+                será resuelta por los tribunales competentes de la Ciudad de México. El uso de esta
+                plataforma está sujeto a las disposiciones de la Ley Federal de Protección al Consumidor
+                y demás normativas aplicables en territorio mexicano.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-semibold text-gray-900 mt-8 mb-4">
+                13. Contacto
               </h2>
               <p>
                 Si tienes preguntas sobre estos términos, contáctanos en:
