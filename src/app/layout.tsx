@@ -30,11 +30,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.credito-mx.com"),
   alternates: {
     canonical: "/",
-    languages: {
-      "es-MX": "https://www.credito-mx.com/",
-      "es": "https://www.credito-mx.com/",
-      "x-default": "https://www.credito-mx.com/",
-    },
   },
   openGraph: {
     type: "website",
@@ -104,6 +99,12 @@ export default function RootLayout({
       lang="es-MX"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* hreflang 标签 - 告诉搜索引擎此页面面向墨西哥西班牙语用户 */}
+        <link rel="alternate" hrefLang="es-MX" href="https://www.credito-mx.com/" />
+        <link rel="alternate" hrefLang="es" href="https://www.credito-mx.com/" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.credito-mx.com/" />
+      </head>
       <body className="min-h-full flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>
