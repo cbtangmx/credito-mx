@@ -2,7 +2,23 @@ import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase-client'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://credito-mx.com'
+  const baseUrl = 'https://www.credito-mx.com'
+
+  // ============================================
+  // 10 个对比页 slug (T09 SEO)
+  // ============================================
+  const COMPARISON_SLUGS = [
+    'stori-vs-klar',
+    'nu-bank-vs-stori',
+    'mercado-pago-vs-nu-bank',
+    'kueski-vs-baubap',
+    'konfio-vs-minu',
+    'citibanamex-vs-bbva-mexico',
+    'hey-banco-vs-banorte',
+    'banco-azteca-vs-bancoppel',
+    'stori-vs-mercado-pago',
+    'nu-bank-vs-mercado-pago',
+  ]
 
   // ============================================
   // 静态页面
@@ -81,7 +97,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.9,
     },
+    // 对比索引页 (T09 SEO)
+    {
+      url: `${baseUrl}/comparar`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
   ]
+
+  // ============================================
+  // 10 个对比详情页 (T09 SEO)
+  // ============================================
+  const comparisonPages: MetadataRoute.Sitemap = COMPARISON_SLUGS.map((slug) => ({
+    url: `${baseUrl}/comparar/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }))
 
   // ============================================
   // 动态机构详情页 (40+ pages)
@@ -123,5 +156,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Sitemap generation: database error:', error)
   }
 
-  return [...staticPages, ...institutionPages, ...complaintPages]
+  return [...staticPages, ...comparisonPages, ...institutionPages, ...complaintPages]
 }

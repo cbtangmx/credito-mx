@@ -35,6 +35,11 @@ export default function Footer() {
                   Evaluar
                 </Link>
               </li>
+              <li>
+                <Link href="/comparar" className="hover:text-white transition-colors">
+                  Comparativas
+                </Link>
+              </li>
             </ul>
           </div>
 
